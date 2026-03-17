@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iseeart Feedback</title>
+  <title>maygrabli — Feedback</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -32,15 +32,27 @@
       text-align: center;
     }
 
-    .gate-card h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 6px;
+    /* Logo in gate */
+    .gate-logo {
+      margin: 0 auto 20px;
+      display: block;
+      max-height: 64px;
+      max-width: 200px;
+      object-fit: contain;
     }
 
-    .gate-card p {
-      color: #6e6e73;
-      font-size: 0.9rem;
+    .gate-artist-name {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .gate-subtitle {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aeaeb2;
       margin-bottom: 28px;
     }
 
@@ -55,9 +67,7 @@
       margin-bottom: 14px;
     }
 
-    .gate-card input[type="password"]:focus {
-      border-color: #0071e3;
-    }
+    .gate-card input[type="password"]:focus { border-color: #0071e3; }
 
     .gate-card button {
       width: 100%;
@@ -84,10 +94,12 @@
     /* ── App ── */
     #app { display: none; }
 
+    /* ── Header ── */
     header {
       background: #fff;
       border-bottom: 1px solid #e5e5ea;
-      padding: 20px 32px;
+      padding: 0 32px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -96,12 +108,38 @@
       z-index: 10;
     }
 
-    header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    header span {
+    /* Logo image — shown when ARTIST_LOGO is set */
+    #header-logo {
+      height: 40px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* Text fallback — shown when no logo */
+    #header-name {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .header-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #aeaeb2;
+      border-left: 1px solid #e5e5ea;
+      padding-left: 14px;
+      line-height: 1;
+    }
+
+    #header-count {
       font-size: 0.85rem;
       color: #6e6e73;
     }
@@ -143,53 +181,47 @@
 
     /* ── Grid ── */
     #grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 20px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 32px 40px;
+      max-width: 860px;
     }
 
     /* ── Cards ── */
     .card {
       background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
       display: flex;
-      flex-direction: column;
-      transition: box-shadow 0.2s, transform 0.2s;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 0;
+      transition: box-shadow 0.15s;
+      overflow: hidden;
     }
 
-    .card:hover {
-      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
-      transform: translateY(-2px);
-    }
+    .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.11); }
 
+    /* Screenshot — small thumbnail on the right, only shown when present */
     .card-thumb {
-      width: 100%;
-      aspect-ratio: 16/9;
+      flex-shrink: 0;
+      width: 120px;
+      height: 80px;
       object-fit: cover;
       cursor: zoom-in;
-      background: #f0f0f5;
-    }
-
-    .card-thumb-placeholder {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: #f0f0f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aeaeb2;
-      font-size: 0.8rem;
+      border-left: 1px solid #f0f0f5;
+      order: 2;
+      align-self: stretch;
     }
 
     .card-body {
-      padding: 16px 18px 20px;
+      padding: 14px 18px 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       flex: 1;
+      order: 1;
     }
 
     .card-meta {
@@ -200,9 +232,9 @@
 
     .badge {
       display: inline-block;
-      padding: 3px 10px;
+      padding: 2px 9px;
       border-radius: 20px;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -213,19 +245,16 @@
     .badge-flow    { background: #edfaf1; color: #27ae60; }
     .badge-general { background: #f5f0ff; color: #7b2fff; }
 
-    .card-id {
-      font-size: 0.75rem;
-      color: #aeaeb2;
-    }
+    .card-id { font-size: 0.72rem; color: #aeaeb2; }
 
     .card-title {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
       line-height: 1.35;
     }
 
     .card-desc {
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       color: #4a4a50;
       line-height: 1.55;
     }
@@ -277,9 +306,10 @@
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
-      header { padding: 16px 20px; }
+      header { padding: 0 20px; }
       #filters, #count { padding-left: 20px; padding-right: 20px; }
       #grid { padding: 16px 20px 32px; gap: 16px; grid-template-columns: 1fr; }
+      .header-label { display: none; }
     }
   </style>
 </head>
@@ -288,8 +318,9 @@
 <!-- Password Gate -->
 <div id="gate">
   <div class="gate-card">
-    <h1>iseeart Feedback</h1>
-    <p>Enter the password to view the feedback board.</p>
+    <!-- Logo or name — populated by JS from config -->
+    <div id="gate-identity"></div>
+    <p class="gate-subtitle">Feedback Board</p>
     <input type="password" id="pw-input" placeholder="Password" autofocus>
     <button onclick="checkPassword()">Enter</button>
     <div id="gate-error"></div>
@@ -299,7 +330,10 @@
 <!-- Feedback App -->
 <div id="app">
   <header>
-    <h1>iseeart Feedback</h1>
+    <div class="header-left">
+      <div id="header-identity"></div>
+      <span class="header-label">Feedback</span>
+    </div>
     <span id="header-count"></span>
   </header>
 
@@ -325,11 +359,45 @@
 </div>
 
 <script>
-  // ── Config ──────────────────────────────────────────────
-  // SHA-256 hash of the password. Default password: "iseeart"
+  // ═══════════════════════════════════════════════════════
+  //  CONFIG — edit these two blocks to customize per artist
+  // ═══════════════════════════════════════════════════════
+
+  // Artist display name (used when no logo image is set)
+  const ARTIST_NAME = "maygrabli";
+
+  // Logo image path — set to null to use text name instead
+  // Example: const ARTIST_LOGO = "logo.png";
+  const ARTIST_LOGO = null;
+
+  // SHA-256 hash of the password. Current password: "iseeart"
   // To change: run `echo -n "yourpassword" | shasum -a 256`
   const PASSWORD_HASH = "f9d7ce1ef900e2ff3cf2706489d409e7a51ccfb3134ffb85245fbb7ff6272ebb";
-  // ────────────────────────────────────────────────────────
+
+  // ═══════════════════════════════════════════════════════
+
+  // Render artist identity in gate + header
+  function renderIdentity(containerId, isGate) {
+    const el = document.getElementById(containerId);
+    if (ARTIST_LOGO) {
+      const img = document.createElement("img");
+      img.src = ARTIST_LOGO;
+      img.alt = ARTIST_NAME;
+      img.className = isGate ? "gate-logo" : "";
+      if (!isGate) { img.id = "header-logo"; }
+      el.appendChild(img);
+    } else {
+      const name = document.createElement(isGate ? "div" : "div");
+      name.className = isGate ? "gate-artist-name" : "";
+      if (!isGate) { name.id = "header-name"; }
+      name.textContent = ARTIST_NAME;
+      el.appendChild(name);
+    }
+  }
+
+  renderIdentity("gate-identity", true);
+  renderIdentity("header-identity", false);
+  document.title = `${ARTIST_NAME} — Feedback`;
 
   let allItems = [];
   let activeFilter = "All";
@@ -359,7 +427,6 @@
     }
   }
 
-  // Auto-unlock if already authenticated this session
   if (sessionStorage.getItem("auth") === "1") {
     document.getElementById("gate").style.display = "none";
     document.getElementById("app").style.display = "block";
@@ -402,9 +469,8 @@
     if (items.length === 0) {
       const empty = document.createElement("div");
       empty.id = "empty";
-      empty.textContent = allItems.length === 0
-        ? "No feedback items yet."
-        : `No items in "${activeFilter}".`;
+      empty.style.display = "block";
+      empty.textContent = allItems.length === 0 ? "No feedback items yet." : `No items in "${activeFilter}".`;
       grid.appendChild(empty);
       return;
     }
@@ -414,11 +480,10 @@
       card.className = "card";
 
       const thumb = item.screenshot
-        ? `<img class="card-thumb" src="screenshots/${item.screenshot}" alt="${item.title}" loading="lazy" onclick="openLightbox('screenshots/${item.screenshot}')">`
-        : `<div class="card-thumb-placeholder">No screenshot</div>`;
+        ? `<img class="card-thumb" src="screenshots/${item.screenshot}" alt="${escHtml(item.title)}" loading="lazy" onclick="openLightbox('screenshots/${item.screenshot}')">`
+        : "";
 
       card.innerHTML = `
-        ${thumb}
         <div class="card-body">
           <div class="card-meta">
             <span class="badge ${badgeClass(item.category)}">${item.category}</span>
@@ -427,6 +492,7 @@
           <div class="card-title">${escHtml(item.title)}</div>
           <div class="card-desc">${escHtml(item.description)}</div>
         </div>
+        ${thumb}
       `;
       grid.appendChild(card);
     });

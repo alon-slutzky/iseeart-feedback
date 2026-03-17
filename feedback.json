@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "Artist name doesn't respect custom branding style",
+    "category": "Product Idea",
+    "screenshot": null,
+    "description": "maygrabli presents her name as a single lowercase word — a deliberate branding choice. The platform should let artists control how their name is displayed (casing, spacing, punctuation) rather than auto-formatting it. Other artists may have similar stylized names."
+  },
+  {
+    "id": 2,
+    "title": "Artist logo is too small and easy to miss",
+    "category": "Product Idea",
+    "screenshot": null,
+    "description": "The artist's signature logo (handwritten 'May' in the top-left) is the smallest element on the page. For artists who have a recognizable logo or signature, it should be a prominent part of the profile — ideally larger, centered, or given dedicated space above the fold."
+  }
+]
