@@ -80,4 +80,22 @@
     "screenshot": null,
     "description": "The Tour feature (accessible via a button in the side menu) is excellent but easy to miss. It should be proactively suggested to new users — ideally auto-triggered or prominently offered on first login, rather than buried in the menu."
   }
+  ,{
+    "id": 11,
+    "title": "Artwork navigation in collections is too easy to miss",
+    "category": "UI/UX Bug",
+    "section": "Collections",
+    "priority": "Low",
+    "screenshot": null,
+    "description": "When viewing a collection, the UI for moving between artworks is not prominent enough. Viewers may not realize there are multiple pieces and assume the collection contains only one. Navigation controls (arrows, thumbnails, or an artwork count indicator) need to be more visible."
+  }
+  ,{
+    "id": 12,
+    "title": "Share button shows copied confirmation only after dismissing the menu",
+    "category": "UI/UX Bug",
+    "section": "Collections",
+    "priority": "Low",
+    "screenshot": null,
+    "description": "When clicking the share button in a collection, the 'link copied' confirmation only appears after clicking away from the share menu. It should appear immediately on click, without requiring an extra dismissal step."
+  }
 ]
