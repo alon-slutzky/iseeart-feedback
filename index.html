@@ -570,8 +570,10 @@
     });
   }
 
-  let cachedSha = null;
-  let debounceTimer = null;
+  let cachedStatusSha   = null;
+  let cachedPrioritySha = null;
+  let statusDebounce    = null;
+  let priorityDebounce  = null;
 
   function updateTokenBtn() {
     const btn = document.getElementById("token-btn");
@@ -606,8 +608,9 @@
     showToast("Token removed — status changes are local only");
   }
 
-  let allItems  = [];
-  let statuses  = {};
+  let allItems   = [];
+  let statuses   = {};
+  let priorities = {};
   let activeStatus   = "All";
   let activePriority = "All";
   let activeSection  = "All";
@@ -649,7 +652,7 @@
   async function init() {
     updateTokenBtn();
     if (localStorage.getItem("dark") === "1") document.getElementById("dark-btn").textContent = "☀️";
-    await Promise.all([loadFeedback(), loadStatuses()]);
+    await Promise.all([loadFeedback(), loadStatuses(), loadPriorities()]);
     buildSectionFilters();
     render();
   }
@@ -660,24 +663,70 @@
     allItems = await res.json();
   }
 
-  async function loadStatuses() {
+  async function loadGithubJson(filename, cachedShaRef) {
+    if (getToken()) {
+      const res = await fetch(
+        `https://api.github.com/repos/${GITHUB_REPO}/contents/${filename}`,
+        { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
+      );
+      const data = await res.json();
+      cachedShaRef.value = data.sha;
+      return JSON.parse(atob(data.content.replace(/\n/g, "")));
+    } else {
+      const res = await fetch(
+        `https://raw.githubusercontent.com/${GITHUB_REPO}/main/${filename}?t=${Date.now()}`
+      );
+      return await res.json();
+    }
+  }
+
+  async function saveGithubJson(filename, content, cachedShaRef) {
+    if (!getToken()) return;
     try {
-      // Use API (not raw) so we get the SHA too — avoids an extra round-trip on first write
-      if (getToken()) {
-        const res = await fetch(
-          `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
+      if (!cachedShaRef.value) {
+        const metaRes = await fetch(
+          `https://api.github.com/repos/${GITHUB_REPO}/contents/${filename}`,
           { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
         );
-        const data = await res.json();
-        cachedSha = data.sha;
-        statuses = JSON.parse(atob(data.content.replace(/\n/g, "")));
-      } else {
-        const res = await fetch(
-          `https://raw.githubusercontent.com/${GITHUB_REPO}/main/statuses.json?t=${Date.now()}`
-        );
-        statuses = await res.json();
+        cachedShaRef.value = (await metaRes.json()).sha;
       }
-    } catch(e) { statuses = {}; }
+      const res = await fetch(
+        `https://api.github.com/repos/${GITHUB_REPO}/contents/${filename}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-Type": "application/json",
+            Accept: "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify({
+            message: `Update ${filename}`,
+            content: btoa(JSON.stringify(content, null, 2) + "\n"),
+            sha: cachedShaRef.value
+          })
+        }
+      );
+      if (!res.ok) {
+        cachedShaRef.value = null;
+        if (res.status === 409) { await saveGithubJson(filename, content, cachedShaRef); return; }
+        throw new Error(`HTTP ${res.status}`);
+      }
+      cachedShaRef.value = (await res.json()).content.sha;
+    } catch(e) {
+      cachedShaRef.value = null;
+      throw e;
+    }
+  }
+
+  const shaStatus   = { value: null };
+  const shaPriority = { value: null };
+
+  async function loadStatuses() {
+    try { statuses   = await loadGithubJson("statuses.json",   shaStatus);   } catch(e) { statuses   = {}; }
+  }
+
+  async function loadPriorities() {
+    try { priorities = await loadGithubJson("priorities.json", shaPriority); } catch(e) { priorities = {}; }
   }
 
   // ── Section filter (dynamic) ──
@@ -715,61 +764,39 @@
     const cur = getStatus(id);
     statuses[String(id)] = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur) + 1) % STATUS_CYCLE.length];
     render();
-    scheduleSave();
+    scheduleFileSave("statuses");
   }
 
-  function scheduleSave() {
+  function cyclePriority(id, e) {
+    e.stopPropagation();
+    const cur = getPriority(id);
+    const cycle = ["Low", "Medium", "High"];
+    priorities[String(id)] = cycle[(cycle.indexOf(cur) + 1) % cycle.length];
+    render();
+    scheduleFileSave("priorities");
+  }
+
+  function scheduleFileSave(type) {
     if (!getToken()) return;
     setSyncState("saving");
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(persistStatuses, 800);
-  }
-
-  async function persistStatuses() {
-    if (!getToken()) return;
-    try {
-      // Fetch SHA only if we don't have it cached
-      if (!cachedSha) {
-        const metaRes = await fetch(
-          `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
-          { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
-        );
-        const meta = await metaRes.json();
-        cachedSha = meta.sha;
-      }
-
-      const res = await fetch(
-        `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-Type": "application/json",
-            Accept: "application/vnd.github.v3+json"
-          },
-          body: JSON.stringify({
-            message: "Update feedback statuses",
-            content: btoa(JSON.stringify(statuses, null, 2) + "\n"),
-            sha: cachedSha
-          })
-        }
-      );
-
-      if (!res.ok) {
-        // SHA was stale — clear cache and retry once
-        cachedSha = null;
-        if (res.status === 409) { await persistStatuses(); return; }
-        throw new Error(`HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-      cachedSha = data.content.sha; // cache the new SHA for next write
-      setSyncState("saved");
-      setTimeout(() => setSyncState(""), 2000);
-    } catch(e) {
-      cachedSha = null;
-      setSyncState("error");
-      showToast("Failed to save — will retry on next change");
+    if (type === "statuses") {
+      clearTimeout(statusDebounce);
+      statusDebounce = setTimeout(async () => {
+        try {
+          await saveGithubJson("statuses.json", statuses, shaStatus);
+          setSyncState("saved");
+          setTimeout(() => setSyncState(""), 2000);
+        } catch(e) { setSyncState("error"); showToast("Failed to save — will retry on next change"); }
+      }, 800);
+    } else {
+      clearTimeout(priorityDebounce);
+      priorityDebounce = setTimeout(async () => {
+        try {
+          await saveGithubJson("priorities.json", priorities, shaPriority);
+          setSyncState("saved");
+          setTimeout(() => setSyncState(""), 2000);
+        } catch(e) { setSyncState("error"); showToast("Failed to save — will retry on next change"); }
+      }, 800);
     }
   }
 
@@ -793,6 +820,8 @@
     return "status-open";
   }
 
+  function getPriority(id) { return priorities[String(id)] || "Low"; }
+
   function priorityDotClass(p) {
     if (p === "High")   return "priority-dot-high";
     if (p === "Medium") return "priority-dot-medium";
@@ -802,8 +831,8 @@
   function render() {
     const items = allItems.filter(item => {
       const s = getStatus(item.id);
-      if (activeStatus   !== "All" && s                              !== activeStatus)   return false;
-      if (activePriority !== "All" && (item.priority || "Low")       !== activePriority) return false;
+      if (activeStatus   !== "All" && s                  !== activeStatus)   return false;
+      if (activePriority !== "All" && getPriority(item.id) !== activePriority) return false;
       if (activeSection  !== "All" && item.section                   !== activeSection)  return false;
       if (activeCategory !== "All" && item.category                  !== activeCategory) return false;
       return true;
@@ -835,11 +864,14 @@
         ? `<img class="card-thumb" src="screenshots/${item.screenshot}" alt="" loading="lazy" onclick="openLightbox('screenshots/${item.screenshot}')">`
         : "";
 
-      const priority = item.priority || "Low";
+      const priority = getPriority(item.id);
       card.innerHTML = `
         <div class="card-body">
           <div class="card-meta">
-            <span class="priority-dot ${priorityDotClass(priority)}" title="Priority: ${priority}"></span>
+            <span class="priority-dot ${priorityDotClass(priority)}"
+              onclick="cyclePriority(${item.id}, event)"
+              title="Priority: ${priority} — click to change"
+              style="cursor:pointer"></span>
             <span class="badge ${badgeClass(item.category)}">${item.category}</span>
             <button class="status-btn ${statusClass(status)}"
               onclick="cycleStatus(${item.id}, event)"

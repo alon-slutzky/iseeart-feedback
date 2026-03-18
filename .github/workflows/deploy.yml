@@ -8,6 +8,7 @@ on:
       - 'feedback.json'
       - 'screenshots/**'
       - 'CLAUDE.md'
+      - 'statuses.json'
 
 permissions:
   contents: read
