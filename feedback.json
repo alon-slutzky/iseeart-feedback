@@ -53,4 +53,13 @@
     "screenshot": "007-artwork-main-label-hover.png",
     "description": "When hovering over an artwork image on the detail page, a 'main' label appears in the bottom-right corner of the image. This looks like an internal branch name or debug tag leaking into the UI — not intentional."
   }
+  ,{
+    "id": 8,
+    "title": "Selecting a frame changes the popup size",
+    "category": "UI/UX Bug",
+    "section": "Dashboard",
+    "priority": "Low",
+    "screenshot": "008-frame-changes-popup-size.png",
+    "description": "In the 'Place Artwork' mockup popup, selecting a frame option causes the entire popup to resize. The modal dimensions should stay fixed regardless of which controls are active."
+  }
 ]
