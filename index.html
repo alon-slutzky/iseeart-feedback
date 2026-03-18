@@ -247,6 +247,12 @@
 
     .card-id { font-size: 0.72rem; color: #aeaeb2; }
 
+    .card-section {
+      font-size: 0.72rem;
+      color: #aeaeb2;
+      margin-top: 2px;
+    }
+
     .card-title {
       font-size: 0.95rem;
       font-weight: 600;
@@ -490,6 +496,7 @@
             <span class="card-id">#${item.id}</span>
           </div>
           <div class="card-title">${escHtml(item.title)}</div>
+          ${item.section ? `<div class="card-section">${escHtml(item.section)}</div>` : ""}
           <div class="card-desc">${escHtml(item.description)}</div>
         </div>
         ${thumb}

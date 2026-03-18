@@ -32,11 +32,14 @@ If a screenshot is provided, save it to `screenshots/` and reference the filenam
   "id": 3,
   "title": "Short, specific title",
   "category": "Product Idea",
+  "section": "Public Profile",
   "screenshot": "screenshot-003.png",
   "description": "Clear explanation of the issue or idea."
 }
 ```
 Set `"screenshot": null` when there's no image.
+
+**Known sections so far:** `Public Profile`, `Dashboard`, `Artwork Upload`, `Catalog`, `QR Tags`, `Onboarding` — add new ones as they come up.
 
 ## Live site
 https://alon-slutzky.github.io/iseeart-feedback/
