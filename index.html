@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>maygrabli — Feedback</title>
+  <title>Alon's isee.art feedback</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,7 +14,7 @@
       min-height: 100vh;
     }
 
-    /* ── Password Gate ── */
+    /* ── Gate ── */
     #gate {
       display: flex;
       align-items: center;
@@ -32,27 +32,15 @@
       text-align: center;
     }
 
-    /* Logo in gate */
-    .gate-logo {
-      margin: 0 auto 20px;
-      display: block;
-      max-height: 64px;
-      max-width: 200px;
-      object-fit: contain;
-    }
-
-    .gate-artist-name {
-      font-size: 1.6rem;
+    .gate-title {
+      font-size: 1.3rem;
       font-weight: 700;
-      letter-spacing: -0.01em;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .gate-subtitle {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #aeaeb2;
+      font-size: 0.85rem;
+      color: #6e6e73;
       margin-bottom: 28px;
     }
 
@@ -99,7 +87,7 @@
       background: #fff;
       border-bottom: 1px solid #e5e5ea;
       padding: 0 32px;
-      height: 64px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -108,74 +96,66 @@
       z-index: 10;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    header h1 { font-size: 1.05rem; font-weight: 700; }
 
-    /* Logo image — shown when ARTIST_LOGO is set */
-    #header-logo {
-      height: 40px;
-      width: auto;
-      display: block;
-      object-fit: contain;
-    }
+    .header-right { display: flex; align-items: center; gap: 12px; }
 
-    /* Text fallback — shown when no logo */
-    #header-name {
-      font-size: 1.35rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
+    #header-count { font-size: 0.85rem; color: #6e6e73; }
 
-    .header-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
+    #sync-indicator {
+      font-size: 0.75rem;
       color: #aeaeb2;
-      border-left: 1px solid #e5e5ea;
-      padding-left: 14px;
-      line-height: 1;
+      min-width: 52px;
+      text-align: right;
     }
 
-    #header-count {
-      font-size: 0.85rem;
-      color: #6e6e73;
-    }
+    #sync-indicator.saving { color: #ff9500; }
+    #sync-indicator.saved  { color: #34c759; }
+    #sync-indicator.error  { color: #ff3b30; }
 
     /* ── Filters ── */
-    #filters {
+    .filter-row {
       display: flex;
-      gap: 8px;
-      padding: 20px 32px 0;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 32px 0;
       flex-wrap: wrap;
     }
 
+    .filter-row-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #aeaeb2;
+      margin-right: 2px;
+      white-space: nowrap;
+      min-width: 58px;
+    }
+
     .filter-btn {
-      padding: 6px 16px;
+      padding: 4px 13px;
       border-radius: 20px;
       border: 1.5px solid #d1d1d6;
       background: #fff;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s;
       color: #1d1d1f;
+      white-space: nowrap;
     }
 
     .filter-btn:hover { border-color: #0071e3; color: #0071e3; }
+    .filter-btn.active { background: #0071e3; border-color: #0071e3; color: #fff; }
 
-    .filter-btn.active {
-      background: #0071e3;
-      border-color: #0071e3;
-      color: #fff;
-    }
+    .filter-btn.active[data-val="Done"]       { background: #34c759; border-color: #34c759; }
+    .filter-btn.active[data-val="Irrelevant"] { background: #8e8e93; border-color: #8e8e93; }
 
     /* ── Count ── */
     #count {
-      padding: 12px 32px 0;
-      font-size: 0.85rem;
+      padding: 8px 32px 0;
+      font-size: 0.8rem;
       color: #6e6e73;
     }
 
@@ -183,8 +163,8 @@
     #grid {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 16px 32px 40px;
+      gap: 8px;
+      padding: 12px 32px 40px;
       max-width: 860px;
     }
 
@@ -196,14 +176,15 @@
       display: flex;
       flex-direction: row;
       align-items: flex-start;
-      gap: 0;
-      transition: box-shadow 0.15s;
       overflow: hidden;
+      transition: box-shadow 0.15s, opacity 0.2s;
     }
 
     .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.11); }
+    .card[data-status="Done"]       { opacity: 0.6; }
+    .card[data-status="Irrelevant"] { opacity: 0.35; }
+    .card[data-status="Irrelevant"] .card-title { text-decoration: line-through; }
 
-    /* Screenshot — small thumbnail on the right, only shown when present */
     .card-thumb {
       flex-shrink: 0;
       width: 120px;
@@ -216,10 +197,10 @@
     }
 
     .card-body {
-      padding: 14px 18px 16px;
+      padding: 11px 15px 13px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       flex: 1;
       order: 1;
     }
@@ -227,14 +208,15 @@
     .card-meta {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .badge {
       display: inline-block;
-      padding: 2px 9px;
+      padding: 2px 8px;
       border-radius: 20px;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -245,34 +227,56 @@
     .badge-flow    { background: #edfaf1; color: #27ae60; }
     .badge-general { background: #f5f0ff; color: #7b2fff; }
 
-    .card-id { font-size: 0.72rem; color: #aeaeb2; }
-
-    .card-section {
-      font-size: 0.72rem;
-      color: #aeaeb2;
-      margin-top: 2px;
+    .status-btn {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      user-select: none;
+      transition: opacity 0.15s, transform 0.1s;
     }
 
+    .status-btn:hover  { opacity: 0.75; }
+    .status-btn:active { transform: scale(0.93); }
+    .status-open       { background: #e8f4fd; color: #0071e3; }
+    .status-done       { background: #e9fbe9; color: #27ae60; }
+    .status-irrelevant { background: #f2f2f7; color: #8e8e93; }
+
+    .card-id      { font-size: 0.7rem; color: #c7c7cc; }
+    .card-section { font-size: 0.72rem; color: #aeaeb2; }
+
     .card-title {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       font-weight: 600;
       line-height: 1.35;
     }
 
     .card-desc {
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: #4a4a50;
       line-height: 1.55;
     }
 
-    /* ── Empty state ── */
-    #empty {
-      display: none;
-      grid-column: 1/-1;
-      text-align: center;
-      padding: 60px 20px;
-      color: #6e6e73;
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(70px);
+      background: #1d1d1f;
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 0.83rem;
+      transition: transform 0.25s ease;
+      z-index: 200;
+      pointer-events: none;
     }
+
+    #toast.show { transform: translateX(-50%) translateY(0); }
 
     /* ── Lightbox ── */
     #lightbox {
@@ -312,51 +316,64 @@
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
-      header { padding: 0 20px; }
-      #filters, #count { padding-left: 20px; padding-right: 20px; }
-      #grid { padding: 16px 20px 32px; gap: 16px; grid-template-columns: 1fr; }
-      .header-label { display: none; }
+      header { padding: 0 16px; }
+      .filter-row, #count { padding-left: 16px; padding-right: 16px; }
+      #grid { padding: 12px 16px 32px; }
+      .filter-row-label { min-width: 48px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Password Gate -->
+<!-- Gate -->
 <div id="gate">
   <div class="gate-card">
-    <!-- Logo or name — populated by JS from config -->
-    <div id="gate-identity"></div>
-    <p class="gate-subtitle">Feedback Board</p>
+    <div class="gate-title">Alon's isee.art feedback</div>
+    <p class="gate-subtitle">Enter password to continue</p>
     <input type="password" id="pw-input" placeholder="Password" autofocus>
     <button onclick="checkPassword()">Enter</button>
     <div id="gate-error"></div>
   </div>
 </div>
 
-<!-- Feedback App -->
+<!-- App -->
 <div id="app">
   <header>
-    <div class="header-left">
-      <div id="header-identity"></div>
-      <span class="header-label">Feedback</span>
+    <h1>Alon's isee.art feedback</h1>
+    <div class="header-right">
+      <span id="sync-indicator"></span>
+      <span id="header-count"></span>
     </div>
-    <span id="header-count"></span>
   </header>
 
-  <div id="filters">
-    <button class="filter-btn active" data-cat="All" onclick="setFilter(this)">All</button>
-    <button class="filter-btn" data-cat="UI/UX Bug" onclick="setFilter(this)">UI/UX Bug</button>
-    <button class="filter-btn" data-cat="Product Idea" onclick="setFilter(this)">Product Idea</button>
-    <button class="filter-btn" data-cat="User Flow" onclick="setFilter(this)">User Flow</button>
-    <button class="filter-btn" data-cat="General" onclick="setFilter(this)">General</button>
+  <div class="filter-row" id="status-row">
+    <span class="filter-row-label">Status</span>
+    <button class="filter-btn active" data-val="All"        onclick="setFilter('status',this,'All')">All</button>
+    <button class="filter-btn"        data-val="Open"       onclick="setFilter('status',this,'Open')">Open</button>
+    <button class="filter-btn"        data-val="Done"       onclick="setFilter('status',this,'Done')">Done</button>
+    <button class="filter-btn"        data-val="Irrelevant" onclick="setFilter('status',this,'Irrelevant')">Irrelevant</button>
+  </div>
+
+  <div class="filter-row" id="section-row">
+    <span class="filter-row-label">Section</span>
+    <!-- populated dynamically -->
+  </div>
+
+  <div class="filter-row" id="category-row">
+    <span class="filter-row-label">Category</span>
+    <button class="filter-btn active" data-val="All"          onclick="setFilter('category',this,'All')">All</button>
+    <button class="filter-btn"        data-val="UI/UX Bug"    onclick="setFilter('category',this,'UI/UX Bug')">UI/UX Bug</button>
+    <button class="filter-btn"        data-val="Product Idea" onclick="setFilter('category',this,'Product Idea')">Product Idea</button>
+    <button class="filter-btn"        data-val="User Flow"    onclick="setFilter('category',this,'User Flow')">User Flow</button>
+    <button class="filter-btn"        data-val="General"      onclick="setFilter('category',this,'General')">General</button>
   </div>
 
   <div id="count"></div>
-
-  <div id="grid">
-    <div id="empty">No feedback items yet.</div>
-  </div>
+  <div id="grid"></div>
 </div>
+
+<!-- Toast -->
+<div id="toast"></div>
 
 <!-- Lightbox -->
 <div id="lightbox" onclick="closeLightbox()">
@@ -366,52 +383,44 @@
 
 <script>
   // ═══════════════════════════════════════════════════════
-  //  CONFIG — edit these two blocks to customize per artist
+  //  CONFIG
   // ═══════════════════════════════════════════════════════
 
-  // Artist display name (used when no logo image is set)
-  const ARTIST_NAME = "maygrabli";
-
-  // Logo image path — set to null to use text name instead
-  // Example: const ARTIST_LOGO = "logo.png";
-  const ARTIST_LOGO = null;
-
-  // SHA-256 hash of the password. Current password: "iseeart"
-  // To change: run `echo -n "yourpassword" | shasum -a 256`
+  // SHA-256 of password (current: "iseeart")
+  // To change: echo -n "newpassword" | shasum -a 256
   const PASSWORD_HASH = "f9d7ce1ef900e2ff3cf2706489d409e7a51ccfb3134ffb85245fbb7ff6272ebb";
 
+  const GITHUB_REPO = "alon-slutzky/iseeart-feedback";
+
+  // Fine-grained PAT with contents:write on this repo.
+  // Pass once via URL hash: https://site/#token=github_pat_xxx
+  // It will be saved to sessionStorage automatically.
   // ═══════════════════════════════════════════════════════
 
-  // Render artist identity in gate + header
-  function renderIdentity(containerId, isGate) {
-    const el = document.getElementById(containerId);
-    if (ARTIST_LOGO) {
-      const img = document.createElement("img");
-      img.src = ARTIST_LOGO;
-      img.alt = ARTIST_NAME;
-      img.className = isGate ? "gate-logo" : "";
-      if (!isGate) { img.id = "header-logo"; }
-      el.appendChild(img);
-    } else {
-      const name = document.createElement(isGate ? "div" : "div");
-      name.className = isGate ? "gate-artist-name" : "";
-      if (!isGate) { name.id = "header-name"; }
-      name.textContent = ARTIST_NAME;
-      el.appendChild(name);
+  // Grab token from URL hash if present, save to sessionStorage
+  (function() {
+    const hash = location.hash;
+    const match = hash.match(/[#&]token=([^&]+)/);
+    if (match) {
+      sessionStorage.setItem("gh_token", decodeURIComponent(match[1]));
+      history.replaceState(null, "", location.pathname + location.search);
     }
-  }
+  })();
 
-  renderIdentity("gate-identity", true);
-  renderIdentity("header-identity", false);
-  document.title = `${ARTIST_NAME} — Feedback`;
+  function getToken() { return sessionStorage.getItem("gh_token") || ""; }
 
-  let allItems = [];
-  let activeFilter = "All";
+  let allItems  = [];
+  let statuses  = {};
+  let activeStatus   = "All";
+  let activeSection  = "All";
+  let activeCategory = "All";
 
-  // ── Password Gate ──
+  const STATUS_CYCLE = ["Open", "Done", "Irrelevant"];
+
+  // ── Auth ──
   async function sha256(str) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
   }
 
   document.getElementById("pw-input").addEventListener("keydown", e => {
@@ -419,15 +428,14 @@
   });
 
   async function checkPassword() {
-    const input = document.getElementById("pw-input").value;
-    const hash = await sha256(input);
+    const hash = await sha256(document.getElementById("pw-input").value);
     if (hash === PASSWORD_HASH) {
       document.getElementById("gate").style.display = "none";
-      document.getElementById("app").style.display = "block";
+      document.getElementById("app").style.display  = "block";
       sessionStorage.setItem("auth", "1");
-      loadFeedback();
+      init();
     } else {
-      document.getElementById("gate-error").textContent = "Incorrect password. Try again.";
+      document.getElementById("gate-error").textContent = "Incorrect password.";
       document.getElementById("pw-input").value = "";
       document.getElementById("pw-input").focus();
     }
@@ -435,22 +443,112 @@
 
   if (sessionStorage.getItem("auth") === "1") {
     document.getElementById("gate").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    loadFeedback();
+    document.getElementById("app").style.display  = "block";
+    init();
   }
 
-  // ── Data Loading ──
+  // ── Init ──
+  async function init() {
+    await Promise.all([loadFeedback(), loadStatuses()]);
+    buildSectionFilters();
+    render();
+    if (!getToken()) showToast("Tip: status changes are session-only without a GitHub token", 4000);
+  }
+
+  // ── Load data ──
   async function loadFeedback() {
+    const res = await fetch("feedback.json?" + Date.now());
+    allItems = await res.json();
+  }
+
+  async function loadStatuses() {
     try {
-      const res = await fetch("feedback.json?" + Date.now());
-      allItems = await res.json();
-      render();
-    } catch (e) {
-      document.getElementById("grid").innerHTML = '<p style="color:#ff3b30;padding:20px">Failed to load feedback.json</p>';
+      const res = await fetch(
+        `https://raw.githubusercontent.com/${GITHUB_REPO}/main/statuses.json?t=${Date.now()}`
+      );
+      statuses = await res.json();
+    } catch(e) { statuses = {}; }
+  }
+
+  // ── Section filter (dynamic) ──
+  function buildSectionFilters() {
+    const sections = ["All", ...new Set(allItems.map(i => i.section).filter(Boolean).sort())];
+    const row = document.getElementById("section-row");
+    const label = row.querySelector(".filter-row-label");
+    row.innerHTML = "";
+    row.appendChild(label);
+    sections.forEach(s => {
+      const btn = document.createElement("button");
+      btn.className = "filter-btn" + (s === "All" ? " active" : "");
+      btn.dataset.val = s;
+      btn.textContent = s;
+      btn.onclick = () => setFilter("section", btn, s);
+      row.appendChild(btn);
+    });
+  }
+
+  // ── Filters ──
+  function setFilter(type, btn, value) {
+    const rowId = type === "status" ? "status-row" : type === "section" ? "section-row" : "category-row";
+    document.querySelectorAll(`#${rowId} .filter-btn`).forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    if (type === "status")   activeStatus   = value;
+    if (type === "section")  activeSection  = value;
+    if (type === "category") activeCategory = value;
+    render();
+  }
+
+  // ── Status management ──
+  function getStatus(id) { return statuses[String(id)] || "Open"; }
+
+  function cycleStatus(id, e) {
+    e.stopPropagation();
+    const cur = getStatus(id);
+    statuses[String(id)] = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur) + 1) % STATUS_CYCLE.length];
+    render();
+    persistStatuses();
+  }
+
+  async function persistStatuses() {
+    if (!getToken()) return;
+    setSyncState("saving");
+    try {
+      const metaRes = await fetch(
+        `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
+        { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
+      );
+      const meta = await metaRes.json();
+      await fetch(
+        `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-Type": "application/json",
+            Accept: "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify({
+            message: "Update feedback statuses",
+            content: btoa(JSON.stringify(statuses, null, 2) + "\n"),
+            sha: meta.sha
+          })
+        }
+      );
+      setSyncState("saved");
+      setTimeout(() => setSyncState(""), 2000);
+    } catch(e) {
+      setSyncState("error");
+      showToast("Failed to save status — check your GitHub token");
     }
   }
 
-  // ── Rendering ──
+  function setSyncState(state) {
+    const el = document.getElementById("sync-indicator");
+    el.className = state || "";
+    el.textContent = state === "saving" ? "Saving…" : state === "saved" ? "Saved ✓" : state === "error" ? "Save failed" : "";
+  }
+
+  // ── Render ──
   function badgeClass(cat) {
     if (cat === "UI/UX Bug")    return "badge-uiux";
     if (cat === "Product Idea") return "badge-idea";
@@ -458,45 +556,58 @@
     return "badge-general";
   }
 
-  function render() {
-    const items = activeFilter === "All"
-      ? allItems
-      : allItems.filter(i => i.category === activeFilter);
+  function statusClass(s) {
+    if (s === "Done")       return "status-done";
+    if (s === "Irrelevant") return "status-irrelevant";
+    return "status-open";
+  }
 
-    document.getElementById("header-count").textContent = `${allItems.length} item${allItems.length !== 1 ? "s" : ""}`;
+  function render() {
+    const items = allItems.filter(item => {
+      const s = getStatus(item.id);
+      if (activeStatus   !== "All" && s             !== activeStatus)   return false;
+      if (activeSection  !== "All" && item.section  !== activeSection)  return false;
+      if (activeCategory !== "All" && item.category !== activeCategory) return false;
+      return true;
+    });
+
+    document.getElementById("header-count").textContent =
+      `${allItems.length} item${allItems.length !== 1 ? "s" : ""}`;
     document.getElementById("count").textContent =
-      activeFilter === "All"
-        ? `Showing all ${items.length} item${items.length !== 1 ? "s" : ""}`
-        : `Showing ${items.length} item${items.length !== 1 ? "s" : ""} in "${activeFilter}"`;
+      `${items.length} of ${allItems.length} shown`;
 
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
 
     if (items.length === 0) {
       const empty = document.createElement("div");
-      empty.id = "empty";
-      empty.style.display = "block";
-      empty.textContent = allItems.length === 0 ? "No feedback items yet." : `No items in "${activeFilter}".`;
+      empty.style.cssText = "text-align:center;padding:60px 20px;color:#6e6e73;font-size:0.9rem";
+      empty.textContent = "No items match the current filters.";
       grid.appendChild(empty);
       return;
     }
 
     items.forEach(item => {
+      const status = getStatus(item.id);
       const card = document.createElement("div");
       card.className = "card";
+      card.dataset.status = status;
 
       const thumb = item.screenshot
-        ? `<img class="card-thumb" src="screenshots/${item.screenshot}" alt="${escHtml(item.title)}" loading="lazy" onclick="openLightbox('screenshots/${item.screenshot}')">`
+        ? `<img class="card-thumb" src="screenshots/${item.screenshot}" alt="" loading="lazy" onclick="openLightbox('screenshots/${item.screenshot}')">`
         : "";
 
       card.innerHTML = `
         <div class="card-body">
           <div class="card-meta">
             <span class="badge ${badgeClass(item.category)}">${item.category}</span>
+            <button class="status-btn ${statusClass(status)}"
+              onclick="cycleStatus(${item.id}, event)"
+              title="Click to cycle: Open → Done → Irrelevant">${status}</button>
             <span class="card-id">#${item.id}</span>
           </div>
-          <div class="card-title">${escHtml(item.title)}</div>
           ${item.section ? `<div class="card-section">${escHtml(item.section)}</div>` : ""}
+          <div class="card-title">${escHtml(item.title)}</div>
           <div class="card-desc">${escHtml(item.description)}</div>
         </div>
         ${thumb}
@@ -505,20 +616,20 @@
     });
   }
 
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  // ── Filters ──
-  function setFilter(btn) {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    activeFilter = btn.dataset.cat;
-    render();
+  // ── Toast ──
+  let toastTimer;
+  function showToast(msg, duration = 3000) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), duration);
   }
 
   // ── Lightbox ──
@@ -532,9 +643,7 @@
     document.getElementById("lightbox-img").src = "";
   }
 
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") closeLightbox();
-  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeLightbox(); });
 </script>
 </body>
 </html>
