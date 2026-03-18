@@ -86,7 +86,7 @@
     "category": "UI/UX Bug",
     "section": "Collections",
     "priority": "Low",
-    "screenshot": null,
+    "screenshot": "011-collection-navigation.png",
     "description": "When viewing a collection, the UI for moving between artworks is not prominent enough. Viewers may not realize there are multiple pieces and assume the collection contains only one. Navigation controls (arrows, thumbnails, or an artwork count indicator) need to be more visible."
   }
   ,{
