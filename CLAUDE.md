@@ -19,6 +19,18 @@ The feedback is gathered by Alon and shared with the isee.art team.
 ## Current feedback subject
 Artist profile pages on isee.art — using **maygrabli** (May Grabli, painter from Yaffa) as the sample. She is also a real testimonial user on the platform.
 
+## Critical: always pull before committing
+ALWAYS run `git pull` before making any changes to `feedback.json` or `statuses.json`.
+The user changes statuses via the UI (which commits directly to the remote via GitHub API).
+If you commit without pulling first, you will overwrite their status changes.
+
+When adding a new feedback item:
+1. `git pull` — get the latest statuses
+2. Add the item to `feedback.json`
+3. Add `"<id>": "Open"` to `statuses.json` (leave all other entries untouched)
+4. Rename any new screenshots to the naming convention
+5. Commit and push
+
 ## How to add feedback
 Alon will describe an issue or drop a screenshot. I interpret it, assign a category, write a clean title + description, and update `feedback.json`.
 
