@@ -20,7 +20,7 @@
     "title": "Contact form topic dropdown doesn't scale with large catalogs",
     "category": "UI/UX Bug",
     "section": "Public Profile — Contact",
-    "screenshot": "Screenshot 2026-03-18 at 22.14.42.png",
+    "screenshot": "004-contact-topic-dropdown.png",
     "description": "The 'Topic' dropdown in the contact form lists every artwork individually as an inquiry option (e.g. 'Inquiry about Askadinya', 'Inquiry about Palestinian Breakfast'). An artist with 50+ works would have an unusable dropdown. A searchable input or autocomplete field would handle large catalogs far better."
   }
   ,{

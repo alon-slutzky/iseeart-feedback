@@ -39,6 +39,9 @@ If a screenshot is provided, save it to `screenshots/` and reference the filenam
 ```
 Set `"screenshot": null` when there's no image.
 
+**Screenshot naming convention:** `{zero-padded-id}-{kebab-slug}.png` — e.g. `004-contact-topic-dropdown.png`
+Always rename macOS auto-generated screenshot filenames to this convention before committing, and update the `screenshot` field in `feedback.json` accordingly.
+
 **Known sections so far:** `Public Profile`, `Dashboard`, `Artwork Upload`, `Catalog`, `QR Tags`, `Onboarding` — add new ones as they come up.
 
 ## Live site
