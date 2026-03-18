@@ -24,6 +24,14 @@
     "description": "The 'Topic' dropdown in the contact form lists every artwork individually as an inquiry option (e.g. 'Inquiry about Askadinya', 'Inquiry about Palestinian Breakfast'). An artist with 50+ works would have an unusable dropdown. A searchable input or autocomplete field would handle large catalogs far better."
   }
   ,{
+    "id": 5,
+    "title": "Language switch is slow — static content should be pre-translated",
+    "category": "UI/UX Bug",
+    "section": "Public Profile",
+    "screenshot": null,
+    "description": "Switching language via the language button has a noticeable delay. Since profile content (bio, artwork titles, exhibition names) is static, translations should be generated once and cached — not computed on every toggle. The translation quality itself looks good."
+  }
+  ,{
     "id": 3,
     "title": "Calendar view is broken for year-only exhibitions",
     "category": "UI/UX Bug",
