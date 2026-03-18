@@ -45,6 +45,7 @@ If a screenshot is provided, save it to `screenshots/` and reference the filenam
   "title": "Short, specific title",
   "category": "Product Idea",
   "section": "Public Profile",
+  "priority": "Low",
   "screenshot": "screenshot-003.png",
   "description": "Clear explanation of the issue or idea."
 }
@@ -54,7 +55,9 @@ Set `"screenshot": null` when there's no image.
 **Screenshot naming convention:** `{zero-padded-id}-{kebab-slug}.png` — e.g. `004-contact-topic-dropdown.png`
 Always rename macOS auto-generated screenshot filenames to this convention before committing, and update the `screenshot` field in `feedback.json` accordingly.
 
-**Known sections so far:** `Public Profile`, `Dashboard`, `Artwork Upload`, `Catalog`, `QR Tags`, `Onboarding` — add new ones as they come up.
+**Sections:** `Public Profile`, `Dashboard` — keep it at these two, no sub-sections.
+
+**Priority values:** `High`, `Medium`, `Low` — default to `Low` when not specified.
 
 ## Live site
 https://alon-slutzky.github.io/iseeart-feedback/

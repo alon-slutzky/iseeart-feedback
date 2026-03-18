@@ -7,11 +7,38 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg:        #f5f5f7;
+      --surface:   #ffffff;
+      --border:    #e5e5ea;
+      --text:      #1d1d1f;
+      --text-2:    #6e6e73;
+      --text-3:    #aeaeb2;
+      --text-4:    #c7c7cc;
+      --hover-bg:  #f0f0f5;
+      --card-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      --card-shadow-hover: 0 3px 14px rgba(0,0,0,0.11);
+    }
+
+    body.dark {
+      --bg:        #1c1c1e;
+      --surface:   #2c2c2e;
+      --border:    #3a3a3c;
+      --text:      #f5f5f7;
+      --text-2:    #aeaeb2;
+      --text-3:    #6e6e73;
+      --text-4:    #48484a;
+      --hover-bg:  #3a3a3c;
+      --card-shadow: 0 1px 6px rgba(0,0,0,0.3);
+      --card-shadow-hover: 0 3px 16px rgba(0,0,0,0.4);
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f5f5f7;
-      color: #1d1d1f;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
+      transition: background 0.2s, color 0.2s;
     }
 
     /* ── Gate ── */
@@ -23,7 +50,7 @@
     }
 
     .gate-card {
-      background: #fff;
+      background: var(--surface);
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.10);
       padding: 48px 40px;
@@ -40,17 +67,19 @@
 
     .gate-subtitle {
       font-size: 0.85rem;
-      color: #6e6e73;
+      color: var(--text-2);
       margin-bottom: 28px;
     }
 
     .gate-card input[type="password"] {
       width: 100%;
       padding: 12px 16px;
-      border: 1.5px solid #d1d1d6;
+      border: 1.5px solid var(--border);
       border-radius: 10px;
       font-size: 1rem;
       outline: none;
+      background: var(--bg);
+      color: var(--text);
       transition: border-color 0.2s;
       margin-bottom: 14px;
     }
@@ -84,8 +113,8 @@
 
     /* ── Header ── */
     header {
-      background: #fff;
-      border-bottom: 1px solid #e5e5ea;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       padding: 0 32px;
       height: 56px;
       display: flex;
@@ -100,11 +129,11 @@
 
     .header-right { display: flex; align-items: center; gap: 12px; }
 
-    #header-count { font-size: 0.85rem; color: #6e6e73; }
+    #header-count { font-size: 0.85rem; color: var(--text-2); }
 
     #sync-indicator {
       font-size: 0.75rem;
-      color: #aeaeb2;
+      color: var(--text-3);
       min-width: 52px;
       text-align: right;
     }
@@ -113,13 +142,25 @@
     #sync-indicator.saved  { color: #34c759; }
     #sync-indicator.error  { color: #ff3b30; }
 
+    #dark-btn {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 2px 4px;
+      line-height: 1;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+    }
+    #dark-btn:hover { opacity: 1; }
+
     #token-btn {
       background: none;
-      border: 1.5px solid #d1d1d6;
+      border: 1.5px solid var(--border);
       border-radius: 8px;
       padding: 4px 10px;
       font-size: 0.75rem;
-      color: #6e6e73;
+      color: var(--text-2);
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -141,25 +182,27 @@
     #token-modal-bg.open { display: flex; }
 
     #token-modal {
-      background: #fff;
+      background: var(--surface);
       border-radius: 14px;
       padding: 28px 28px 24px;
       width: 100%;
       max-width: 440px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
 
     #token-modal h2 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
-    #token-modal p  { font-size: 0.82rem; color: #6e6e73; margin-bottom: 16px; line-height: 1.5; }
+    #token-modal p  { font-size: 0.82rem; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; }
 
     #token-input {
       width: 100%;
       padding: 10px 12px;
-      border: 1.5px solid #d1d1d6;
+      border: 1.5px solid var(--border);
       border-radius: 8px;
       font-size: 0.85rem;
       font-family: monospace;
       outline: none;
+      background: var(--bg);
+      color: var(--text);
       margin-bottom: 14px;
     }
 
@@ -176,54 +219,68 @@
       border: none;
     }
 
-    .modal-btn-secondary { background: #f2f2f7; color: #1d1d1f; }
+    .modal-btn-secondary { background: var(--hover-bg); color: var(--text); }
     .modal-btn-primary   { background: #0071e3; color: #fff; }
     .modal-btn-danger    { background: #fff0f0; color: #ff3b30; }
 
-    /* ── Filters ── */
-    .filter-row {
+    /* ── Filter bar ── */
+    #filter-bar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px 32px 0;
+      gap: 0;
+      padding: 12px 32px 0;
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       flex-wrap: wrap;
     }
 
-    .filter-row-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #aeaeb2;
-      margin-right: 2px;
-      white-space: nowrap;
-      min-width: 58px;
+    .filter-group + .filter-group::before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      margin: 0 10px;
+      flex-shrink: 0;
     }
 
     .filter-btn {
-      padding: 4px 13px;
-      border-radius: 20px;
-      border: 1.5px solid #d1d1d6;
-      background: #fff;
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
       font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.15s;
-      color: #1d1d1f;
+      transition: background 0.12s, color 0.12s;
+      color: var(--text-2);
       white-space: nowrap;
     }
 
-    .filter-btn:hover { border-color: #0071e3; color: #0071e3; }
-    .filter-btn.active { background: #0071e3; border-color: #0071e3; color: #fff; }
+    .filter-btn:hover { background: var(--hover-bg); color: var(--text); }
+    .filter-btn.active { background: var(--text); color: var(--bg); }
 
-    .filter-btn.active[data-val="Done"]       { background: #34c759; border-color: #34c759; }
-    .filter-btn.active[data-val="Irrelevant"] { background: #8e8e93; border-color: #8e8e93; }
+    /* Status active overrides */
+    .filter-btn.active[data-val="Open"]       { background: #0071e3; }
+    .filter-btn.active[data-val="Done"]       { background: #34c759; }
+    .filter-btn.active[data-val="Irrelevant"] { background: #8e8e93; }
+
+    /* Priority active overrides */
+    .filter-btn.active[data-val="High"]   { background: #ff3b30; }
+    .filter-btn.active[data-val="Medium"] { background: #ff9500; }
+    .filter-btn.active[data-val="Low"]    { background: #8e8e93; }
 
     /* ── Count ── */
     #count {
       padding: 8px 32px 0;
       font-size: 0.8rem;
-      color: #6e6e73;
+      color: var(--text-2);
     }
 
     /* ── Grid ── */
@@ -237,9 +294,9 @@
 
     /* ── Cards ── */
     .card {
-      background: #fff;
+      background: var(--surface);
       border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      box-shadow: var(--card-shadow);
       display: flex;
       flex-direction: row;
       align-items: flex-start;
@@ -247,7 +304,7 @@
       transition: box-shadow 0.15s, opacity 0.2s;
     }
 
-    .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.11); }
+    .card:hover { box-shadow: var(--card-shadow-hover); }
     .card[data-status="Done"]       { opacity: 0.6; }
     .card[data-status="Irrelevant"] { opacity: 0.35; }
     .card[data-status="Irrelevant"] .card-title { text-decoration: line-through; }
@@ -258,7 +315,7 @@
       height: 80px;
       object-fit: cover;
       cursor: zoom-in;
-      border-left: 1px solid #f0f0f5;
+      border-left: 1px solid var(--border);
       order: 2;
       align-self: stretch;
     }
@@ -312,8 +369,19 @@
     .status-done       { background: #e9fbe9; color: #27ae60; }
     .status-irrelevant { background: #f2f2f7; color: #8e8e93; }
 
-    .card-id      { font-size: 0.7rem; color: #c7c7cc; }
-    .card-section { font-size: 0.72rem; color: #aeaeb2; }
+    .card-id      { font-size: 0.7rem; color: var(--text-4); }
+    .card-section { font-size: 0.72rem; color: var(--text-3); }
+
+    .priority-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .priority-dot-high   { background: #ff3b30; }
+    .priority-dot-medium { background: #ff9500; }
+    .priority-dot-low    { background: #c7c7cc; }
 
     .card-title {
       font-size: 0.93rem;
@@ -323,7 +391,7 @@
 
     .card-desc {
       font-size: 0.84rem;
-      color: #4a4a50;
+      color: var(--text-2);
       line-height: 1.55;
     }
 
@@ -384,9 +452,8 @@
     /* ── Responsive ── */
     @media (max-width: 600px) {
       header { padding: 0 16px; }
-      .filter-row, #count { padding-left: 16px; padding-right: 16px; }
+      #filter-bar, #count { padding-left: 16px; padding-right: 16px; }
       #grid { padding: 12px 16px 32px; }
-      .filter-row-label { min-width: 48px; }
     }
   </style>
 </head>
@@ -409,6 +476,7 @@
     <h1>Alon's isee.art feedback</h1>
     <div class="header-right">
       <span id="sync-indicator"></span>
+      <button id="dark-btn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
       <button id="token-btn" onclick="openTokenModal()">⚙ Sync</button>
       <span id="header-count"></span>
     </div>
@@ -428,26 +496,34 @@
     </div>
   </div>
 
-  <div class="filter-row" id="status-row">
-    <span class="filter-row-label">Status</span>
-    <button class="filter-btn active" data-val="All"        onclick="setFilter('status',this,'All')">All</button>
-    <button class="filter-btn"        data-val="Open"       onclick="setFilter('status',this,'Open')">Open</button>
-    <button class="filter-btn"        data-val="Done"       onclick="setFilter('status',this,'Done')">Done</button>
-    <button class="filter-btn"        data-val="Irrelevant" onclick="setFilter('status',this,'Irrelevant')">Irrelevant</button>
-  </div>
+  <div id="filter-bar">
+    <!-- Status -->
+    <div class="filter-group" id="status-group">
+      <button class="filter-btn active" data-val="All"        onclick="setFilter('status',this,'All')">All</button>
+      <button class="filter-btn"        data-val="Open"       onclick="setFilter('status',this,'Open')">Open</button>
+      <button class="filter-btn"        data-val="Done"       onclick="setFilter('status',this,'Done')">Done</button>
+      <button class="filter-btn"        data-val="Irrelevant" onclick="setFilter('status',this,'Irrelevant')">Irrelevant</button>
+    </div>
 
-  <div class="filter-row" id="section-row">
-    <span class="filter-row-label">Section</span>
-    <!-- populated dynamically -->
-  </div>
+    <!-- Priority -->
+    <div class="filter-group" id="priority-group">
+      <button class="filter-btn active" data-val="All"    onclick="setFilter('priority',this,'All')">Any priority</button>
+      <button class="filter-btn"        data-val="High"   onclick="setFilter('priority',this,'High')">High</button>
+      <button class="filter-btn"        data-val="Medium" onclick="setFilter('priority',this,'Medium')">Medium</button>
+      <button class="filter-btn"        data-val="Low"    onclick="setFilter('priority',this,'Low')">Low</button>
+    </div>
 
-  <div class="filter-row" id="category-row">
-    <span class="filter-row-label">Category</span>
-    <button class="filter-btn active" data-val="All"          onclick="setFilter('category',this,'All')">All</button>
-    <button class="filter-btn"        data-val="UI/UX Bug"    onclick="setFilter('category',this,'UI/UX Bug')">UI/UX Bug</button>
-    <button class="filter-btn"        data-val="Product Idea" onclick="setFilter('category',this,'Product Idea')">Product Idea</button>
-    <button class="filter-btn"        data-val="User Flow"    onclick="setFilter('category',this,'User Flow')">User Flow</button>
-    <button class="filter-btn"        data-val="General"      onclick="setFilter('category',this,'General')">General</button>
+    <!-- Section — populated dynamically -->
+    <div class="filter-group" id="section-group"></div>
+
+    <!-- Category -->
+    <div class="filter-group" id="category-group">
+      <button class="filter-btn active" data-val="All"          onclick="setFilter('category',this,'All')">All types</button>
+      <button class="filter-btn"        data-val="UI/UX Bug"    onclick="setFilter('category',this,'UI/UX Bug')">UI/UX Bug</button>
+      <button class="filter-btn"        data-val="Product Idea" onclick="setFilter('category',this,'Product Idea')">Product Idea</button>
+      <button class="filter-btn"        data-val="User Flow"    onclick="setFilter('category',this,'User Flow')">User Flow</button>
+      <button class="filter-btn"        data-val="General"      onclick="setFilter('category',this,'General')">General</button>
+    </div>
   </div>
 
   <div id="count"></div>
@@ -477,6 +553,22 @@
   // ═══════════════════════════════════════════════════════
 
   function getToken() { return localStorage.getItem("gh_token") || ""; }
+
+  // ── Dark mode ──
+  function toggleDark() {
+    const isDark = document.body.classList.toggle("dark");
+    localStorage.setItem("dark", isDark ? "1" : "");
+    document.getElementById("dark-btn").textContent = isDark ? "☀️" : "🌙";
+  }
+
+  // Apply saved preference immediately
+  if (localStorage.getItem("dark") === "1") {
+    document.body.classList.add("dark");
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("dark-btn");
+      if (btn) btn.textContent = "☀️";
+    });
+  }
 
   let cachedSha = null;
   let debounceTimer = null;
@@ -517,6 +609,7 @@
   let allItems  = [];
   let statuses  = {};
   let activeStatus   = "All";
+  let activePriority = "All";
   let activeSection  = "All";
   let activeCategory = "All";
 
@@ -555,6 +648,7 @@
   // ── Init ──
   async function init() {
     updateTokenBtn();
+    if (localStorage.getItem("dark") === "1") document.getElementById("dark-btn").textContent = "☀️";
     await Promise.all([loadFeedback(), loadStatuses()]);
     buildSectionFilters();
     render();
@@ -589,26 +683,25 @@
   // ── Section filter (dynamic) ──
   function buildSectionFilters() {
     const sections = ["All", ...new Set(allItems.map(i => i.section).filter(Boolean).sort())];
-    const row = document.getElementById("section-row");
-    const label = row.querySelector(".filter-row-label");
-    row.innerHTML = "";
-    row.appendChild(label);
+    const group = document.getElementById("section-group");
+    group.innerHTML = "";
     sections.forEach(s => {
       const btn = document.createElement("button");
       btn.className = "filter-btn" + (s === "All" ? " active" : "");
       btn.dataset.val = s;
-      btn.textContent = s;
+      btn.textContent = s === "All" ? "All sections" : s;
       btn.onclick = () => setFilter("section", btn, s);
-      row.appendChild(btn);
+      group.appendChild(btn);
     });
   }
 
   // ── Filters ──
   function setFilter(type, btn, value) {
-    const rowId = type === "status" ? "status-row" : type === "section" ? "section-row" : "category-row";
-    document.querySelectorAll(`#${rowId} .filter-btn`).forEach(b => b.classList.remove("active"));
+    const groupId = { status: "status-group", priority: "priority-group", section: "section-group", category: "category-group" }[type];
+    document.querySelectorAll(`#${groupId} .filter-btn`).forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     if (type === "status")   activeStatus   = value;
+    if (type === "priority") activePriority = value;
     if (type === "section")  activeSection  = value;
     if (type === "category") activeCategory = value;
     render();
@@ -700,12 +793,19 @@
     return "status-open";
   }
 
+  function priorityDotClass(p) {
+    if (p === "High")   return "priority-dot-high";
+    if (p === "Medium") return "priority-dot-medium";
+    return "priority-dot-low";
+  }
+
   function render() {
     const items = allItems.filter(item => {
       const s = getStatus(item.id);
-      if (activeStatus   !== "All" && s             !== activeStatus)   return false;
-      if (activeSection  !== "All" && item.section  !== activeSection)  return false;
-      if (activeCategory !== "All" && item.category !== activeCategory) return false;
+      if (activeStatus   !== "All" && s                              !== activeStatus)   return false;
+      if (activePriority !== "All" && (item.priority || "Low")       !== activePriority) return false;
+      if (activeSection  !== "All" && item.section                   !== activeSection)  return false;
+      if (activeCategory !== "All" && item.category                  !== activeCategory) return false;
       return true;
     });
 
@@ -735,9 +835,11 @@
         ? `<img class="card-thumb" src="screenshots/${item.screenshot}" alt="" loading="lazy" onclick="openLightbox('screenshots/${item.screenshot}')">`
         : "";
 
+      const priority = item.priority || "Low";
       card.innerHTML = `
         <div class="card-body">
           <div class="card-meta">
+            <span class="priority-dot ${priorityDotClass(priority)}" title="Priority: ${priority}"></span>
             <span class="badge ${badgeClass(item.category)}">${item.category}</span>
             <button class="status-btn ${statusClass(status)}"
               onclick="cycleStatus(${item.id}, event)"

@@ -4,6 +4,7 @@
     "title": "Artist name doesn't respect custom branding style",
     "category": "Product Idea",
     "section": "Public Profile",
+    "priority": "Low",
     "screenshot": null,
     "description": "maygrabli presents her name as a single lowercase word — a deliberate branding choice. The platform should let artists control how their name is displayed (casing, spacing, punctuation) rather than auto-formatting it. Other artists may have similar stylized names."
   },
@@ -11,7 +12,8 @@
     "id": 3,
     "title": "Calendar view is broken for year-only exhibitions",
     "category": "UI/UX Bug",
-    "section": "Public Profile — Exhibitions",
+    "section": "Public Profile",
+    "priority": "Low",
     "screenshot": "003-exhibitions-calendar-view.png",
     "description": "When an exhibition only has a year (no specific start/end month), the calendar view renders it as a bar spanning all 12 months — implying a year-long show, which is wrong. On top of that, each year gets its own full 12-column calendar row, so a spread like 2025 / 2022 / 2015 creates three massive mostly-empty rows. The calendar format only makes sense with precise dates; for year-only data, it should either fall back to the timeline view or show a much more compact year-based layout."
   },
@@ -19,7 +21,8 @@
     "id": 4,
     "title": "Contact form topic dropdown doesn't scale with large catalogs",
     "category": "UI/UX Bug",
-    "section": "Public Profile — Contact",
+    "section": "Public Profile",
+    "priority": "Low",
     "screenshot": "004-contact-topic-dropdown.png",
     "description": "The 'Topic' dropdown in the contact form lists every artwork individually as an inquiry option (e.g. 'Inquiry about Askadinya', 'Inquiry about Palestinian Breakfast'). An artist with 50+ works would have an unusable dropdown. A searchable input or autocomplete field would handle large catalogs far better."
   },
@@ -28,6 +31,7 @@
     "title": "Language switch is slow — static content should be pre-translated",
     "category": "UI/UX Bug",
     "section": "Public Profile",
+    "priority": "Low",
     "screenshot": null,
     "description": "Switching language via the language button has a noticeable delay. Since profile content (bio, artwork titles, exhibition names) is static, translations should be generated once and cached — not computed on every toggle. The translation quality itself looks good."
   },
@@ -35,7 +39,8 @@
     "id": 6,
     "title": "Artwork status labels use inconsistent font",
     "category": "UI/UX Bug",
-    "section": "Public Profile — Artworks",
+    "section": "Public Profile",
+    "priority": "Low",
     "screenshot": null,
     "description": "The status labels on art pieces (e.g. 'Available', 'Sold') appear in a different font than the rest of the platform, breaking visual consistency."
   },
@@ -43,7 +48,8 @@
     "id": 7,
     "title": "\"main\" label appears on artwork image hover",
     "category": "UI/UX Bug",
-    "section": "Dashboard — Artwork Detail",
+    "section": "Dashboard",
+    "priority": "Low",
     "screenshot": "007-artwork-main-label-hover.png",
     "description": "When hovering over an artwork image on the detail page, a 'main' label appears in the bottom-right corner of the image. This looks like an internal branch name or debug tag leaking into the UI — not intentional."
   }
