@@ -15,4 +15,12 @@
     "screenshot": null,
     "description": "The artist's signature logo (handwritten 'May' in the top-left) is the smallest element on the page. For artists who have a recognizable logo or signature, it should be a prominent part of the profile — ideally larger, centered, or given dedicated space above the fold."
   }
+  ,{
+    "id": 3,
+    "title": "Calendar view is broken for year-only exhibitions",
+    "category": "UI/UX Bug",
+    "section": "Public Profile — Exhibitions",
+    "screenshot": null,
+    "description": "When an exhibition only has a year (no specific start/end month), the calendar view renders it as a bar spanning all 12 months — implying a year-long show, which is wrong. On top of that, each year gets its own full 12-column calendar row, so a spread like 2025 / 2022 / 2015 creates three massive mostly-empty rows. The calendar format only makes sense with precise dates; for year-only data, it should either fall back to the timeline view or show a much more compact year-based layout."
+  }
 ]
