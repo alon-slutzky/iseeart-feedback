@@ -62,4 +62,22 @@
     "screenshot": "008-frame-changes-popup-size.png",
     "description": "In the 'Place Artwork' mockup popup, selecting a frame option causes the entire popup to resize. The modal dimensions should stay fixed regardless of which controls are active."
   }
+  ,{
+    "id": 9,
+    "title": "Side menu opening animation is janky",
+    "category": "UI/UX Bug",
+    "section": "Dashboard",
+    "priority": "Low",
+    "screenshot": null,
+    "description": "The side menu open/close animation doesn't feel smooth. Likely missing an easing curve or the transition is abrupt."
+  }
+  ,{
+    "id": 10,
+    "title": "Tour feature is hidden — should be surfaced after first login",
+    "category": "Product Idea",
+    "section": "Dashboard",
+    "priority": "Low",
+    "screenshot": null,
+    "description": "The Tour feature (accessible via a button in the side menu) is excellent but easy to miss. It should be proactively suggested to new users — ideally auto-triggered or prominently offered on first login, rather than buried in the menu."
+  }
 ]
