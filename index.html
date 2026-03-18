@@ -113,6 +113,73 @@
     #sync-indicator.saved  { color: #34c759; }
     #sync-indicator.error  { color: #ff3b30; }
 
+    #token-btn {
+      background: none;
+      border: 1.5px solid #d1d1d6;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: #6e6e73;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    #token-btn:hover { border-color: #0071e3; color: #0071e3; }
+    #token-btn.connected { border-color: #34c759; color: #34c759; }
+
+    /* ── Token modal ── */
+    #token-modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #token-modal-bg.open { display: flex; }
+
+    #token-modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+
+    #token-modal h2 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    #token-modal p  { font-size: 0.82rem; color: #6e6e73; margin-bottom: 16px; line-height: 1.5; }
+
+    #token-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #d1d1d6;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-family: monospace;
+      outline: none;
+      margin-bottom: 14px;
+    }
+
+    #token-input:focus { border-color: #0071e3; }
+
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    .modal-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .modal-btn-secondary { background: #f2f2f7; color: #1d1d1f; }
+    .modal-btn-primary   { background: #0071e3; color: #fff; }
+    .modal-btn-danger    { background: #fff0f0; color: #ff3b30; }
+
     /* ── Filters ── */
     .filter-row {
       display: flex;
@@ -342,9 +409,24 @@
     <h1>Alon's isee.art feedback</h1>
     <div class="header-right">
       <span id="sync-indicator"></span>
+      <button id="token-btn" onclick="openTokenModal()">⚙ Sync</button>
       <span id="header-count"></span>
     </div>
   </header>
+
+  <!-- Token modal -->
+  <div id="token-modal-bg" onclick="closeTokenModal(event)">
+    <div id="token-modal">
+      <h2>GitHub Sync</h2>
+      <p>Paste a fine-grained GitHub PAT with <strong>contents:write</strong> on this repo. Saved locally in your browser — never sent anywhere except GitHub's API.</p>
+      <input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off">
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-danger" onclick="clearToken()">Remove</button>
+        <button class="modal-btn modal-btn-secondary" onclick="closeTokenModal()">Cancel</button>
+        <button class="modal-btn modal-btn-primary" onclick="saveToken()">Save</button>
+      </div>
+    </div>
+  </div>
 
   <div class="filter-row" id="status-row">
     <span class="filter-row-label">Status</span>
@@ -392,22 +474,42 @@
 
   const GITHUB_REPO = "alon-slutzky/iseeart-feedback";
 
-  // Fine-grained PAT with contents:write on this repo.
-  // Pass once via URL hash: https://site/#token=github_pat_xxx
-  // It will be saved to sessionStorage automatically.
   // ═══════════════════════════════════════════════════════
 
-  // Grab token from URL hash if present, save to sessionStorage
-  (function() {
-    const hash = location.hash;
-    const match = hash.match(/[#&]token=([^&]+)/);
-    if (match) {
-      sessionStorage.setItem("gh_token", decodeURIComponent(match[1]));
-      history.replaceState(null, "", location.pathname + location.search);
-    }
-  })();
+  function getToken() { return localStorage.getItem("gh_token") || ""; }
 
-  function getToken() { return sessionStorage.getItem("gh_token") || ""; }
+  function updateTokenBtn() {
+    const btn = document.getElementById("token-btn");
+    if (getToken()) { btn.textContent = "⚙ Sync: on"; btn.classList.add("connected"); }
+    else            { btn.textContent = "⚙ Sync";     btn.classList.remove("connected"); }
+  }
+
+  function openTokenModal() {
+    document.getElementById("token-input").value = getToken();
+    document.getElementById("token-modal-bg").classList.add("open");
+    document.getElementById("token-input").focus();
+  }
+
+  function closeTokenModal(e) {
+    if (e && e.target !== document.getElementById("token-modal-bg")) return;
+    document.getElementById("token-modal-bg").classList.remove("open");
+  }
+
+  function saveToken() {
+    const val = document.getElementById("token-input").value.trim();
+    if (val) localStorage.setItem("gh_token", val);
+    document.getElementById("token-modal-bg").classList.remove("open");
+    updateTokenBtn();
+    showToast("Token saved — status changes will now sync for all users");
+  }
+
+  function clearToken() {
+    localStorage.removeItem("gh_token");
+    document.getElementById("token-input").value = "";
+    document.getElementById("token-modal-bg").classList.remove("open");
+    updateTokenBtn();
+    showToast("Token removed — status changes are local only");
+  }
 
   let allItems  = [];
   let statuses  = {};
@@ -449,10 +551,10 @@
 
   // ── Init ──
   async function init() {
+    updateTokenBtn();
     await Promise.all([loadFeedback(), loadStatuses()]);
     buildSectionFilters();
     render();
-    if (!getToken()) showToast("Tip: status changes are session-only without a GitHub token", 4000);
   }
 
   // ── Load data ──
