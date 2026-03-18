@@ -478,6 +478,9 @@
 
   function getToken() { return localStorage.getItem("gh_token") || ""; }
 
+  let cachedSha = null;
+  let debounceTimer = null;
+
   function updateTokenBtn() {
     const btn = document.getElementById("token-btn");
     if (getToken()) { btn.textContent = "⚙ Sync: on"; btn.classList.add("connected"); }
@@ -565,10 +568,21 @@
 
   async function loadStatuses() {
     try {
-      const res = await fetch(
-        `https://raw.githubusercontent.com/${GITHUB_REPO}/main/statuses.json?t=${Date.now()}`
-      );
-      statuses = await res.json();
+      // Use API (not raw) so we get the SHA too — avoids an extra round-trip on first write
+      if (getToken()) {
+        const res = await fetch(
+          `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
+          { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
+        );
+        const data = await res.json();
+        cachedSha = data.sha;
+        statuses = JSON.parse(atob(data.content.replace(/\n/g, "")));
+      } else {
+        const res = await fetch(
+          `https://raw.githubusercontent.com/${GITHUB_REPO}/main/statuses.json?t=${Date.now()}`
+        );
+        statuses = await res.json();
+      }
     } catch(e) { statuses = {}; }
   }
 
@@ -608,19 +622,30 @@
     const cur = getStatus(id);
     statuses[String(id)] = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur) + 1) % STATUS_CYCLE.length];
     render();
-    persistStatuses();
+    scheduleSave();
+  }
+
+  function scheduleSave() {
+    if (!getToken()) return;
+    setSyncState("saving");
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(persistStatuses, 800);
   }
 
   async function persistStatuses() {
     if (!getToken()) return;
-    setSyncState("saving");
     try {
-      const metaRes = await fetch(
-        `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
-        { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
-      );
-      const meta = await metaRes.json();
-      await fetch(
+      // Fetch SHA only if we don't have it cached
+      if (!cachedSha) {
+        const metaRes = await fetch(
+          `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
+          { headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github.v3+json" } }
+        );
+        const meta = await metaRes.json();
+        cachedSha = meta.sha;
+      }
+
+      const res = await fetch(
         `https://api.github.com/repos/${GITHUB_REPO}/contents/statuses.json`,
         {
           method: "PUT",
@@ -632,15 +657,26 @@
           body: JSON.stringify({
             message: "Update feedback statuses",
             content: btoa(JSON.stringify(statuses, null, 2) + "\n"),
-            sha: meta.sha
+            sha: cachedSha
           })
         }
       );
+
+      if (!res.ok) {
+        // SHA was stale — clear cache and retry once
+        cachedSha = null;
+        if (res.status === 409) { await persistStatuses(); return; }
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      cachedSha = data.content.sha; // cache the new SHA for next write
       setSyncState("saved");
       setTimeout(() => setSyncState(""), 2000);
     } catch(e) {
+      cachedSha = null;
       setSyncState("error");
-      showToast("Failed to save status — check your GitHub token");
+      showToast("Failed to save — will retry on next change");
     }
   }
 
