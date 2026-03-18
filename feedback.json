@@ -31,4 +31,12 @@
     "screenshot": null,
     "description": "Switching language via the language button has a noticeable delay. Since profile content (bio, artwork titles, exhibition names) is static, translations should be generated once and cached — not computed on every toggle. The translation quality itself looks good."
   }
+  ,{
+    "id": 6,
+    "title": "Artwork status labels use inconsistent font",
+    "category": "UI/UX Bug",
+    "section": "Public Profile — Artworks",
+    "screenshot": null,
+    "description": "The status labels on art pieces (e.g. 'Available', 'Sold') appear in a different font than the rest of the platform, breaking visual consistency."
+  }
 ]
