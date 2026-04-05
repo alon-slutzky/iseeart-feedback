@@ -98,4 +98,13 @@
     "screenshot": null,
     "description": "When clicking the share button in a collection, the 'link copied' confirmation only appears after clicking away from the share menu. It should appear immediately on click, without requiring an extra dismissal step."
   }
+  ,{
+    "id": 13,
+    "title": "Uploaded profile photo doesn't render in the profile setup page",
+    "category": "UI/UX Bug",
+    "section": "Dashboard",
+    "priority": "Low",
+    "screenshot": "013-profile-photo-not-shown-after-upload.png",
+    "description": "After uploading a profile photo, the circular preview shows the text 'Uploaded image' instead of the actual image. The photo is accepted (Change/Remove buttons appear) but the preview fails to render."
+  }
 ]
